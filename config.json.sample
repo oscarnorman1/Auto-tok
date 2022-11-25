@@ -4,5 +4,6 @@
   "password": "",
   "user_agent": "",
   "username": "",
-  "check_for_async": ""
+  "check_for_async": "",
+  "firefox_profile_path": ""
 }

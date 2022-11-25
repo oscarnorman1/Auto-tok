@@ -30,6 +30,10 @@ def videostuff(json_blob):
     intro_txt = mpy.TextClip(json_blob['title'], fontsize=40, color='white')
     intro_txt = intro_txt.set_position('center').set_duration(5)
 
+
+    # TODO: Add some for of for loops to iterate through len(json_blob['sentence_list']) and create
+    # TODO: text to speech, VideoFileClip, TextClip and CompositeVideoClip and lastly concatenate them all
+
     comment_txt = mpy.TextClip(json_blob['content'], fontsize=10, color='white')
     comment_txt = comment_txt.set_position('center').set_duration(5)
 
@@ -46,19 +50,19 @@ def videostuff(json_blob):
 def fetch_reddit_stuff(subreddit):
     reddit = r.return_instance()
     blob = json.loads(r.return_blob(subreddit, reddit))
-    #print(blob['title'])
-    #print(blob['ups'])
-    #print(blob['sentance_list'])
+    # print(blob['title'])
+    # print(blob['ups'])
+    # print(blob['sentence_list'])
     return blob
 
 
 def main():
     # subreddit = subredditlist.getRandomSub()
     subreddit = 'TalesFromRetail'
-    #seleniumstuff(subreddit)
+    # seleniumstuff(subreddit)
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    print(len(reddit_json_blob['sentance_list']))
-    #videostuff(reddit_json_blob)
+    print(reddit_json_blob['sentence_list'])
+    # videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
