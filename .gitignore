@@ -26,7 +26,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-../Discord-Bot/.idea/
+../Auto-tok/.idea/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -113,6 +113,10 @@ venv.bak/
 
 # Config
 config.json
+
+# Generated stuff
+assets/
+results/
 
 # Spyder project settings
 .spyderproject

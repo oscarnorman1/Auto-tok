@@ -34,10 +34,14 @@ def return_blob(subreddit, reddit_instance):
     ups = best_submission.ups
     content = best_submission.selftext
 
+    l = content.split()
+    n = 7
+    sentance_list = [' '.join(l[x:x + n]) for x in range(0, len(l), n)]
+
     values = {
         'title': title,
         'ups': ups,
-        'content': content
+        'sentance_list': sentance_list
     }
 
     #    for top in top_comments:

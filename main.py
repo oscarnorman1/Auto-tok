@@ -27,10 +27,10 @@ def videostuff(json_blob):
     intro = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 5)
     comment = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 5)
 
-    intro_txt = mpy.TextClip(blob['title'], fontsize=40, color='white')
+    intro_txt = mpy.TextClip(json_blob['title'], fontsize=40, color='white')
     intro_txt = intro_txt.set_position('center').set_duration(5)
 
-    comment_txt = mpy.TextClip(blob['one'], fontsize=40, color='white')
+    comment_txt = mpy.TextClip(json_blob['content'], fontsize=10, color='white')
     comment_txt = comment_txt.set_position('center').set_duration(5)
 
     intro_vid = mpy.CompositeVideoClip([intro, intro_txt])
@@ -39,23 +39,26 @@ def videostuff(json_blob):
     final_clip = concatenate_videoclips([intro_vid, comment_vid])
 
     # final_clip.preview()
-    # final_clip.show(0, interactive=True)
+    final_clip.show(7, interactive=True)
     # final_clip.write_videofile("test.mp4")
 
 
 def fetch_reddit_stuff(subreddit):
     reddit = r.return_instance()
     blob = json.loads(r.return_blob(subreddit, reddit))
-    print(blob['title'])
-    print(blob['ups'])
-    print(blob['content'])
+    #print(blob['title'])
+    #print(blob['ups'])
+    #print(blob['sentance_list'])
     return blob
 
 
 def main():
-    subreddit = subredditlist.getRandomSub()
-    seleniumstuff(subreddit)
-    #fetch_reddit_stuff('confession')
+    # subreddit = subredditlist.getRandomSub()
+    subreddit = 'TalesFromRetail'
+    #seleniumstuff(subreddit)
+    reddit_json_blob = fetch_reddit_stuff(subreddit)
+    print(len(reddit_json_blob['sentance_list']))
+    #videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
