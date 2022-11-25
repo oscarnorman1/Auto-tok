@@ -116,7 +116,7 @@ config.json
 
 # Generated stuff
 assets/
-
+results/
 
 # Spyder project settings
 .spyderproject
