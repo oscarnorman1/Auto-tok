@@ -1,21 +1,62 @@
 import moviepy.editor as mpy
 from moviepy.video.compositing.concatenate import concatenate_videoclips
+from selenium import webdriver
+import reddit as r
+import json
+import config
+import subredditlist
 
-intro = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 10)
-comment = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 10)
 
-intro_txt = mpy.TextClip("Reddit post title", fontsize=40, color='white')
-intro_txt = intro_txt.set_position('center').set_duration(5)
+def seleniumstuff(subreddit):
+    firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
 
-comment_txt = mpy.TextClip("Reddit post comments", fontsize=40, color='white')
-comment_txt = comment_txt.set_position('center').set_duration(5)
+    fox = webdriver.Firefox(firefox_profile=firefox_profile)
+    fox.get(f'https://www.reddit.com/r/{subreddit}/')
 
-intro_vid = mpy.CompositeVideoClip([intro, intro_txt])
-comment_vid = mpy.CompositeVideoClip([comment, comment_txt])
+    # element_cookie = fox.find_element('xpath', '//*[@id="SHORTCUT_FOCUSABLE_DIV"]/div[3]/div[1]/section/div/section[2]/section[1]/form/button')
+    # element_cookie.click()
+    # time.sleep(1)
 
-final_clip = concatenate_videoclips([intro_vid, comment_vid])
+    element_post = fox.find_element('xpath',
+                                    '//*[@id="AppRouter-main-content"]/div/div/div[2]/div[4]/div[1]/div[4]/div[2]/div')
+    element_post.screenshot('results/postTitle.png')
+    fox.quit()
 
-#final_clip.preview()
-final_clip.show(11, interactive=True)
 
-# video.write_videofile("test.mp4")
+def videostuff(json_blob):
+    intro = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 5)
+    comment = mpy.VideoFileClip("assets/basevideo.mp4").subclip(0, 5)
+
+    intro_txt = mpy.TextClip(blob['title'], fontsize=40, color='white')
+    intro_txt = intro_txt.set_position('center').set_duration(5)
+
+    comment_txt = mpy.TextClip(blob['one'], fontsize=40, color='white')
+    comment_txt = comment_txt.set_position('center').set_duration(5)
+
+    intro_vid = mpy.CompositeVideoClip([intro, intro_txt])
+    comment_vid = mpy.CompositeVideoClip([comment, comment_txt])
+
+    final_clip = concatenate_videoclips([intro_vid, comment_vid])
+
+    # final_clip.preview()
+    # final_clip.show(0, interactive=True)
+    # final_clip.write_videofile("test.mp4")
+
+
+def fetch_reddit_stuff(subreddit):
+    reddit = r.return_instance()
+    blob = json.loads(r.return_blob(subreddit, reddit))
+    print(blob['title'])
+    print(blob['ups'])
+    print(blob['content'])
+    return blob
+
+
+def main():
+    subreddit = subredditlist.getRandomSub()
+    seleniumstuff(subreddit)
+    #fetch_reddit_stuff('confession')
+
+
+if __name__ == "__main__":
+    main()
