@@ -41,7 +41,8 @@ def return_blob(subreddit, reddit_instance):
     values = {
         'title': title,
         'ups': ups,
-        'sentence_list': sentence_list
+        'sentence_list': sentence_list,
+        'sentence_list_full': content
     }
 
     #    for top in top_comments:
