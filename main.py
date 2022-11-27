@@ -1,6 +1,6 @@
 import moviepy.editor as mpy
 from selenium import webdriver
-from pydub import AudioSegment
+from mutagen.mp3 import MP3
 import reddit as r
 import json
 import config
@@ -29,10 +29,7 @@ def videostuff(json_blob):
     text_clips_list = []
     final_video = None
 
-    AudioSegment.ffmpeg = 'ffmpeg/'
-    audio = AudioSegment.from_file('results/audio/test.mp3')
-    # audio_length = audio.info.length
-    # print(audio_length)
+    audio = MP3('results/audio/test.mp3')
 
     tmp1 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4').subclip(0, 7)
     tmp2 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
@@ -84,10 +81,10 @@ def main():
     # subreddit = subredditlist.getRandomSub()
     subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    seleniumstuff(subreddit)
-    # text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
+    # seleniumstuff(subreddit)
+    text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
     # print(reddit_json_blob['sentence_list'])
-    # videostuff(reddit_json_blob)
+    videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
