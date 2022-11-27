@@ -19,12 +19,12 @@ def return_blob(subreddit, reddit_instance):
 
     subreddit = reddit_instance.subreddit(subreddit)
     print("SUBREDDIT: {}".format(subreddit))
-    subreddit_hot = subreddit.hot(limit=10)
+    subreddit_top = subreddit.top('week', limit=1)
 
     all_comments = []
     best_submission = ''
 
-    for best_submission in subreddit_hot:
+    for best_submission in subreddit_top:
         if not best_submission.stickied:
             best_submission = best_submission
             break
@@ -33,7 +33,6 @@ def return_blob(subreddit, reddit_instance):
     title = best_submission.title
     ups = best_submission.ups
     content = best_submission.selftext
-
     l = content.split()
     n = 7
     sentence_list = [' '.join(l[x:x + n]) for x in range(0, len(l), n)]

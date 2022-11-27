@@ -12,14 +12,14 @@ def seleniumstuff(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
 
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/')
+    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=week')
 
     # element_cookie = fox.find_element('xpath', '//*[@id="SHORTCUT_FOCUSABLE_DIV"]/div[3]/div[1]/section/div/section[2]/section[1]/form/button')
     # element_cookie.click()
     # time.sleep(1)
 
     element_post = fox.find_element('xpath',
-                                    '//*[@id="AppRouter-main-content"]/div/div/div[2]/div[4]/div[1]/div[4]/div[2]/div')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div')
     element_post.screenshot('results/img/postTitle.png')
     fox.quit()
 
@@ -82,12 +82,12 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'TalesFromRetail'
-    # seleniumstuff(subreddit)
+    subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
+    seleniumstuff(subreddit)
+    # text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
     # print(reddit_json_blob['sentence_list'])
-    videostuff(reddit_json_blob)
+    # videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
