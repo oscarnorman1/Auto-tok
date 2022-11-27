@@ -6,9 +6,7 @@ import json
 import config
 import subredditlist
 import pyttsx3
-import ffmpeg
 import os
-from pathlib import Path
 
 
 def seleniumstuff(subreddit):
@@ -70,10 +68,8 @@ def text_to_speech_stuff(text):
     engine.save_to_file(text, 'results/audio/test.mp3')
     engine.runAndWait()
 
-    AudioSegment.ffmpeg = os.getcwd() + "\\ffmpeg\\bin\\ffmpeg.exe"
-    print(AudioSegment.ffmpeg)
     print(os.getcwd())
-    print(os.getcwd() + "results/audio/test.mp3")
+    print(os.getcwd() + "\\test.mp3")
 
     audio = AudioSegment.from_file(os.getcwd() + "\\test.mp3")
     print(audio.duration_seconds)
@@ -93,7 +89,7 @@ def main():
     subreddit = subredditlist.getRandomSub()
     # subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    seleniumstuff(subreddit)
+    # seleniumstuff(subreddit)
     text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
     # print(reddit_json_blob['sentence_list'])
     videostuff(reddit_json_blob)
