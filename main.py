@@ -73,7 +73,7 @@ def text_to_speech_stuff(text):
     AudioSegment.ffmpeg = os.getcwd() + "\\ffmpeg\\bin\\ffmpeg.exe"
     print(AudioSegment.ffmpeg)
     print(os.getcwd())
-    print(os.getcwd() + "\\test.mp3")
+    print(os.getcwd() + "results/audio/test.mp3")
 
     audio = AudioSegment.from_file(os.getcwd() + "\\test.mp3")
     print(audio.duration_seconds)
@@ -93,10 +93,10 @@ def main():
     subreddit = subredditlist.getRandomSub()
     # subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    # seleniumstuff(subreddit)
+    seleniumstuff(subreddit)
     text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
     # print(reddit_json_blob['sentence_list'])
-    # videostuff(reddit_json_blob)
+    videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
