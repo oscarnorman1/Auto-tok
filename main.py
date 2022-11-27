@@ -1,11 +1,14 @@
 import moviepy.editor as mpy
 from selenium import webdriver
-from mutagen.mp3 import MP3
+from pydub import AudioSegment
 import reddit as r
 import json
 import config
 import subredditlist
 import pyttsx3
+import ffmpeg
+import os
+from pathlib import Path
 
 
 def seleniumstuff(subreddit):
@@ -29,7 +32,7 @@ def videostuff(json_blob):
     text_clips_list = []
     final_video = None
 
-    audio = MP3('results/audio/test.mp3')
+    # audio = MP3('results/audio/test.mp3')
 
     tmp1 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4').subclip(0, 7)
     tmp2 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
@@ -43,15 +46,15 @@ def videostuff(json_blob):
     # final = mpy.concatenate_videoclips((intro_title_display, tmp2, tmp3, tmp4))
 
     for sentence in sentance_list:
-        text_clip = mpy.TextClip(sentence, font="Arial", fontsize=75, color='white').set_position(
+        text_clip = mpy.TextClip(sentence, font="Arial", fontsize=45, color='white').set_position(
             'center').set_duration(3)
         text_clips_list.append(text_clip)
 
     final_text_clip = mpy.concatenate_videoclips(text_clips_list).set_position('center')
     final_comment_display = mpy.CompositeVideoClip([comment_display, final_text_clip])
     final = mpy.concatenate_videoclips([final_intro_title_display, final_comment_display])
-    final.resize(height=1280, width=720)
-    final.show(17, interactive=True)
+    final.resize((720, 1280))
+    final.show(2, interactive=True)
     # final.write_videofile('result.mp4', threads=8, fps=30)
 
     # TODO: Add some for loops to iterate through len(json_blob['sentence_list']) and create
@@ -67,6 +70,15 @@ def text_to_speech_stuff(text):
     engine.save_to_file(text, 'results/audio/test.mp3')
     engine.runAndWait()
 
+    AudioSegment.ffmpeg = os.getcwd() + "\\ffmpeg\\bin\\ffmpeg.exe"
+    print(AudioSegment.ffmpeg)
+    print(os.getcwd())
+    print(os.getcwd() + "\\test.mp3")
+
+    audio = AudioSegment.from_file(os.getcwd() + "\\test.mp3")
+    print(audio.duration_seconds)
+    # print(audio.duration_seconds)
+
 
 def fetch_reddit_stuff(subreddit):
     reddit = r.return_instance()
@@ -78,13 +90,13 @@ def fetch_reddit_stuff(subreddit):
 
 
 def main():
-    # subreddit = subredditlist.getRandomSub()
-    subreddit = 'TrueOffMyChest'
+    subreddit = subredditlist.getRandomSub()
+    # subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     # seleniumstuff(subreddit)
     text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
     # print(reddit_json_blob['sentence_list'])
-    videostuff(reddit_json_blob)
+    # videostuff(reddit_json_blob)
 
 
 if __name__ == "__main__":
