@@ -7,6 +7,7 @@ import config
 import subredditlist
 import pyttsx3
 import os
+import math
 
 
 def seleniumstuff(subreddit):
@@ -25,12 +26,15 @@ def seleniumstuff(subreddit):
     fox.quit()
 
 
-def videostuff(json_blob):
+def videostuff(json_blob, audio_durations_array):
     sentance_list = json_blob['sentence_list']
     text_clips_list = []
-    final_video = None
 
-    # audio = MP3('results/audio/test.mp3')
+    audio_title_duration = audio_durations_array[0]
+    audio_content_duration = audio_durations_array[1]
+
+    print(f'title dur: {audio_title_duration}')
+    print(f'content dur: {audio_content_duration}')
 
     tmp1 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4').subclip(0, 7)
     tmp2 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
@@ -55,33 +59,24 @@ def videostuff(json_blob):
     final.show(2, interactive=True)
     # final.write_videofile('result.mp4', threads=8, fps=30)
 
-    # TODO: Add some for loops to iterate through len(json_blob['sentence_list']) and create
-    # TODO: text to speech, VideoFileClip, TextClip and CompositeVideoClip and lastly concatenate them all
 
 
-def text_to_speech_stuff(text):
-    # audio = gTTS(text=text, lang='en', tld='co.uk', slow=False)
-    # audio.save("results/audio/text_to_speech_content.mp3")
+def text_to_speech_stuff(text_array):
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
-    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.Alex')
-    engine.save_to_file(text, 'results/audio/test.mp3')
+    engine.setProperty('voice', voices[0])
+    engine.save_to_file(text_array[0], 'results/audio/test_title.mp3')
+    engine.save_to_file(text_array[1], 'results/audio/test_content.mp3')
     engine.runAndWait()
 
-    print(os.getcwd())
-    print(os.getcwd() + "\\test.mp3")
+    audio_title = AudioSegment.from_file(os.getcwd() + "\\results\\audio\\test_title.mp3")
+    audio_content = AudioSegment.from_file(os.getcwd() + "\\results\\audio\\test_content.mp3")
 
-    audio = AudioSegment.from_file(os.getcwd() + "\\test.mp3")
-    print(audio.duration_seconds)
-    # print(audio.duration_seconds)
-
+    return [math.ceil(audio_title.duration_seconds), math.ceil(audio_content.duration_seconds)]
 
 def fetch_reddit_stuff(subreddit):
     reddit = r.return_instance()
     blob = json.loads(r.return_blob(subreddit, reddit))
-    # print(blob['title'])
-    # print(blob['ups'])
-    # print(blob['sentence_list'])
     return blob
 
 
@@ -90,9 +85,8 @@ def main():
     # subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     # seleniumstuff(subreddit)
-    text_to_speech_stuff(reddit_json_blob['sentence_list_full'])
-    # print(reddit_json_blob['sentence_list'])
-    videostuff(reddit_json_blob)
+    audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['sentence_list_full']])
+    videostuff(reddit_json_blob, audio_durations)
 
 
 if __name__ == "__main__":
