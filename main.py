@@ -45,9 +45,10 @@ def video_stuff(json_blob, audio_durations_array):
     # Intro title video
     intro_title_display = get_concatenated_background_video(3)
     final_intro_title_display = mpy.CompositeVideoClip([intro_title_display, image_original]) \
-        .subclip(0, audio_title_duration + 2)
-    final_intro_title_display.set_audio(intro_title_audio)
+        .subclip(0, audio_title_duration + 2).set_audio(intro_title_audio)
     print(f'intro vid duration: {final_intro_title_display.duration}')
+
+    final_intro_title_display.write_videofile('result.mp4', threads=12, fps=30)
 
     # Content title video
     comment_display = get_concatenated_background_video(15)
