@@ -36,7 +36,7 @@ def videostuff(json_blob, audio_durations_array):
     print(f'title dur: {audio_title_duration}')
     print(f'content dur: {audio_content_duration}')
 
-    tmp1 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4').subclip(0, 7)
+    tmp1 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
     tmp2 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
     tmp3 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
     tmp4 = mpy.VideoFileClip('assets/pexels-ekaterina-bolovtsova.mp4')
