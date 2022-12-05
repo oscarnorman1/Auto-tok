@@ -8,21 +8,38 @@ import subredditlist
 import pyttsx3
 import os
 import math
+import time
 
 
-def seleniumstuff(subreddit):
+def selenium_save_title_print_screen(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
 
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=week')
+    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=day')
 
-    # element_cookie = fox.find_element('xpath', '//*[@id="SHORTCUT_FOCUSABLE_DIV"]/div[3]/div[1]/section/div/section[2]/section[1]/form/button')
-    # element_cookie.click()
-    # time.sleep(1)
+    clickable_element = fox.find_element('xpath',
+                                         '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
+    clickable_element.click()
 
     element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div')
+                                    '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div')
     element_post.screenshot('results/img/postTitle.png')
+    fox.quit()
+
+
+def selenium_save_content_print_screen(subreddit):
+    firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
+
+    fox = webdriver.Firefox(firefox_profile=firefox_profile)
+    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=day')
+
+    clickable_element = fox.find_element('xpath',
+                                         '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
+    clickable_element.click()
+
+    element_post = fox.find_element('xpath',
+                                    '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div/div[4]')
+    element_post.screenshot('results/img/postContent.png')
     fox.quit()
 
 
@@ -37,31 +54,37 @@ def video_stuff(json_blob, audio_durations_array):
     print(f'content dur: {audio_content_duration}')
 
     # Image to add to title video
-    image_original = (mpy.ImageClip("results/img/postTitle.png").set_duration(7).set_pos('center'))
+    title_image = (mpy.ImageClip("results/img/postTitle.png").set_duration(audio_title_duration + 2).set_pos('center'))
 
     # Audio to title video
     intro_title_audio = mpy.AudioFileClip('results/audio/test_title.mp3')
 
     # Intro title video
     intro_title_display = get_concatenated_background_video(3)
-    final_intro_title_display = mpy.CompositeVideoClip([intro_title_display, image_original]) \
+    final_intro_title_display = mpy.CompositeVideoClip([intro_title_display, title_image]) \
         .subclip(0, audio_title_duration + 2).set_audio(intro_title_audio)
     print(f'intro vid duration: {final_intro_title_display.duration}')
 
-    final_intro_title_display.write_videofile('result.mp4', threads=12, fps=30)
-
     # Content title video
-    comment_display = get_concatenated_background_video(15)
-    for sentence in sentence_list:
-        text_clip = mpy.TextClip(sentence, font="Arial", fontsize=45, color='white').set_position(
-            'center').set_duration(3)
-        text_clips_list.append(text_clip)
-    final_text_clip = mpy.concatenate_videoclips(text_clips_list).set_position('center')
-    final_comment_display = mpy.CompositeVideoClip([comment_display, final_text_clip])\
-        .subclip(0, audio_content_duration)
+    content_image = (mpy.ImageClip('results/img/postContent.png').set_duration(7).set_pos('center'))
+
+    content_audio = mpy.AudioFileClip('results/audio/test_content.mp3')
+
+    content_display = get_concatenated_background_video(15)
+    final_content_display = mpy.CompositeVideoClip([content_display, content_image]) \
+        .subclip(0, audio_content_duration + 3).set_audio(content_audio)
+
+    # content_display = get_concatenated_background_video(15)
+    # for sentence in sentence_list:
+    #    text_clip = mpy.TextClip(sentence, font="Arial", fontsize=45, color='white').set_position(
+    #        'center').set_duration(3)
+    #    text_clips_list.append(text_clip)
+    # final_text_clip = mpy.concatenate_videoclips(text_clips_list).set_position('center')
+    # final_comment_display = mpy.CompositeVideoClip([content_display, final_text_clip]) \
+    #    .subclip(0, audio_content_duration)
 
     # Final video
-    final = mpy.concatenate_videoclips([final_intro_title_display, final_comment_display])
+    final = mpy.concatenate_videoclips([final_intro_title_display, final_content_display])
 
     # Preview or write
     final.resize((720, 1280))
@@ -101,7 +124,8 @@ def main():
     # subreddit = subredditlist.getRandomSub()
     subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    seleniumstuff(subreddit)
+    selenium_save_title_print_screen(subreddit)
+    selenium_save_content_print_screen(subreddit)
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['sentence_list_full']])
     video_stuff(reddit_json_blob, audio_durations)
 
