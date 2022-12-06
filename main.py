@@ -54,7 +54,7 @@ def video_stuff(json_blob, audio_durations_array):
     print(f'content dur: {audio_content_duration}')
 
     # Image to add to title video
-    title_image = (mpy.ImageClip("results/img/postTitle.png").set_duration(audio_title_duration + 2).set_pos('center'))
+    title_image = (mpy.ImageClip("results/img/postTitle.png").set_duration(audio_title_duration + 2).set_pos('center').resize(1.5))
 
     # Audio to title video
     intro_title_audio = mpy.AudioFileClip('results/audio/test_title.mp3')
@@ -66,7 +66,7 @@ def video_stuff(json_blob, audio_durations_array):
     print(f'intro vid duration: {final_intro_title_display.duration}')
 
     # Content title video
-    content_image = (mpy.ImageClip('results/img/postContent.png').set_duration(7).set_pos('center'))
+    content_image = (mpy.ImageClip('results/img/postContent.png').set_duration(audio_content_duration + 3).set_pos('center').resize(1.15))
 
     content_audio = mpy.AudioFileClip('results/audio/test_content.mp3')
 
@@ -122,7 +122,7 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'TrueOffMyChest'
+    subreddit = 'confession'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_save_title_print_screen(subreddit)
     selenium_save_content_print_screen(subreddit)
