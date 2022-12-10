@@ -5,7 +5,9 @@ list = [
     'confession',
     'TalesFromRetail',
     'talesfromtechsupport',
-    'offmychest'
+    'offmychest',
+    'AmItheAsshole',
+    'pettyrevenge'
 ]
 
 
