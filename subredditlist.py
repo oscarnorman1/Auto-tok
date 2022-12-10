@@ -4,7 +4,8 @@ list = [
     'TrueOffMyChest',
     'confession',
     'TalesFromRetail',
-    'talesfromtechsupport'
+    'talesfromtechsupport',
+    'offmychest'
 ]
 
 

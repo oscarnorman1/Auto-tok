@@ -20,6 +20,7 @@ def selenium_save_title_print_screen(subreddit):
     clickable_element = fox.find_element('xpath',
                                          '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
     clickable_element.click()
+    time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
                                     '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div')
@@ -36,6 +37,7 @@ def selenium_save_content_print_screen(subreddit):
     clickable_element = fox.find_element('xpath',
                                          '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
     clickable_element.click()
+    time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
                                     '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div/div[4]')
@@ -54,7 +56,9 @@ def video_stuff(json_blob, audio_durations_array):
     print(f'content dur: {audio_content_duration}')
 
     # Image to add to title video
-    title_image = (mpy.ImageClip("results/img/postTitle.png").set_duration(audio_title_duration + 2).set_pos('center').resize(1.5))
+    title_image = (mpy.ImageClip("results/img/postTitle.png")
+                   .set_duration(audio_title_duration + 2)
+                   .set_pos('center').resize(1.4))
 
     # Audio to title video
     intro_title_audio = mpy.AudioFileClip('results/audio/test_title.mp3')
@@ -62,17 +66,21 @@ def video_stuff(json_blob, audio_durations_array):
     # Intro title video
     intro_title_display = get_concatenated_background_video(3)
     final_intro_title_display = mpy.CompositeVideoClip([intro_title_display, title_image]) \
-        .subclip(0, audio_title_duration + 2).set_audio(intro_title_audio)
+        .subclip(0, audio_title_duration).set_audio(intro_title_audio)
     print(f'intro vid duration: {final_intro_title_display.duration}')
 
     # Content title video
-    content_image = (mpy.ImageClip('results/img/postContent.png').set_duration(audio_content_duration + 3).set_pos('center').resize(1.15))
+    content_image = (mpy.ImageClip('results/img/postContent.png')
+                     .set_duration(audio_content_duration + 3)
+                     .set_pos('center')
+                     .resize(1.5))
 
     content_audio = mpy.AudioFileClip('results/audio/test_content.mp3')
 
     content_display = get_concatenated_background_video(15)
     final_content_display = mpy.CompositeVideoClip([content_display, content_image]) \
-        .subclip(0, audio_content_duration + 3).set_audio(content_audio)
+        .subclip(0, audio_content_duration + 2)\
+        .set_audio(content_audio)
 
     # content_display = get_concatenated_background_video(15)
     # for sentence in sentence_list:
@@ -88,7 +96,7 @@ def video_stuff(json_blob, audio_durations_array):
 
     # Preview or write
     final.resize((720, 1280))
-    # final.show(2, interactive=True)
+    #final.show(15, interactive=True)
     final.write_videofile('result.mp4', threads=12, fps=30)
 
 
@@ -122,7 +130,7 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'confession'
+    subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_save_title_print_screen(subreddit)
     selenium_save_content_print_screen(subreddit)
