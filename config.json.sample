@@ -5,5 +5,6 @@
   "user_agent": "",
   "username": "",
   "check_for_async": "",
-  "firefox_profile_path": ""
+  "firefox_profile_path": "",
+  "top_category": "week"
 }

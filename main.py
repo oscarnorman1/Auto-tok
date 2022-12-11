@@ -14,8 +14,9 @@ import time
 def selenium_save_title_print_screen(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
 
+    top_category = config.getProperty("top_category")
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=day')
+    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t={top_category}')
 
     clickable_element = fox.find_element('xpath',
                                          '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
@@ -31,8 +32,9 @@ def selenium_save_title_print_screen(subreddit):
 def selenium_save_content_print_screen(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
 
+    top_category = config.getProperty('top_category')
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t=day')
+    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t={top_category}')
 
     clickable_element = fox.find_element('xpath',
                                          '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
@@ -130,7 +132,7 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'TrueOffMyChest'
+    subreddit = 'offmychest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_save_title_print_screen(subreddit)
     selenium_save_content_print_screen(subreddit)

@@ -19,7 +19,8 @@ def return_blob(subreddit, reddit_instance):
 
     subreddit = reddit_instance.subreddit(subreddit)
     print("SUBREDDIT: {}".format(subreddit))
-    subreddit_top = subreddit.top('day', limit=1)
+    top_category = config.getProperty('top_category')
+    subreddit_top = subreddit.top(top_category, limit=1)
 
     all_comments = []
     best_submission = ''
