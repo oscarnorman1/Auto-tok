@@ -45,7 +45,7 @@ def video_stuff(audio_durations_array):
     # Image to add to title video
     title_image = (mpy.ImageClip("results/img/postTitle.png")
                    .set_duration(audio_title_duration + 2)
-                   .set_pos('center').resize(1.4))
+                   .set_pos('center').resize(width=1000))
 
     # Audio to title video
     intro_title_audio = mpy.AudioFileClip('results/audio/test_title.mp3')
@@ -60,7 +60,7 @@ def video_stuff(audio_durations_array):
     content_image = (mpy.ImageClip('results/img/postContent.png')
                      .set_duration(audio_content_duration + 3)
                      .set_pos('center')
-                     .resize(1.5))
+                     .resize(width=1000))
 
     content_audio = mpy.AudioFileClip('results/audio/test_content.mp3')
 
