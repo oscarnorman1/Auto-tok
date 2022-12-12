@@ -13,44 +13,29 @@ import time
 
 def selenium_save_title_print_screen(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
-
-    top_category = config.getProperty("top_category")
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t={top_category}')
-
-    clickable_element = fox.find_element('xpath',
-                                         '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
-    clickable_element.click()
+    fox.get(subreddit)
     time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
     element_post.screenshot('results/img/postTitle.png')
     fox.quit()
 
 
 def selenium_save_content_print_screen(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
-
-    top_category = config.getProperty('top_category')
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(f'https://www.reddit.com/r/{subreddit}/top/?t={top_category}')
-
-    clickable_element = fox.find_element('xpath',
-                                         '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[4]/div[1]/div[4]/div[2]/div/div/div[3]/div[2]')
-    clickable_element.click()
+    fox.get(subreddit)
     time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[3]/div/div/div/div[2]/div[1]/div[2]/div[1]/div/div[4]')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[4]/div/p')
     element_post.screenshot('results/img/postContent.png')
     fox.quit()
 
 
-def video_stuff(json_blob, audio_durations_array):
-    sentence_list = json_blob['sentence_list']
-    text_clips_list = []
-
+def video_stuff(audio_durations_array):
     audio_title_duration = audio_durations_array[0]
     audio_content_duration = audio_durations_array[1]
 
@@ -84,20 +69,13 @@ def video_stuff(json_blob, audio_durations_array):
         .subclip(0, audio_content_duration + 2)\
         .set_audio(content_audio)
 
-    # content_display = get_concatenated_background_video(15)
-    # for sentence in sentence_list:
-    #    text_clip = mpy.TextClip(sentence, font="Arial", fontsize=45, color='white').set_position(
-    #        'center').set_duration(3)
-    #    text_clips_list.append(text_clip)
-    # final_text_clip = mpy.concatenate_videoclips(text_clips_list).set_position('center')
-    # final_comment_display = mpy.CompositeVideoClip([content_display, final_text_clip]) \
-    #    .subclip(0, audio_content_duration)
-
     # Final video
     final = mpy.concatenate_videoclips([final_intro_title_display, final_content_display])
 
-    # Preview or write
+    # Resize to save some disk space
     final.resize((720, 1280))
+
+    # Preview or write
     #final.show(15, interactive=True)
     final.write_videofile('result.mp4', threads=12, fps=30)
 
@@ -132,12 +110,12 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'offmychest'
+    subreddit = 'TrueOffMyChest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    selenium_save_title_print_screen(subreddit)
-    selenium_save_content_print_screen(subreddit)
-    audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['sentence_list_full']])
-    video_stuff(reddit_json_blob, audio_durations)
+    selenium_save_title_print_screen(reddit_json_blob['url'])
+    selenium_save_content_print_screen(reddit_json_blob['url'])
+    audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
+    video_stuff(audio_durations)
 
 
 if __name__ == "__main__":
