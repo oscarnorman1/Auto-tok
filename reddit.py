@@ -20,32 +20,51 @@ def return_blob(subreddit, reddit_instance):
     subreddit = reddit_instance.subreddit(subreddit)
     print("SUBREDDIT: {}".format(subreddit))
     top_category = config.getProperty('top_category')
-    subreddit_top = subreddit.top(top_category, limit=1)
+    subreddit_top = subreddit.top(top_category, limit=100)
 
-    all_comments = []
-    best_submission = ''
-
-    for best_submission in subreddit_top:
+    tmp_dict_list = []
+    for index, best_submission in enumerate(subreddit_top):
         if not best_submission.stickied:
-            best_submission = best_submission
-            break
+            tmpdict = {
+                'title': best_submission.title,
+                'content': best_submission.selftext,
+                'ups': best_submission.ups,
+                'url': best_submission.url
+            }
+            tmp_dict_list.append(tmpdict)
 
-    # print('Title: {}, Ups: {}, Downs: {}'.format(submission.title, submission.ups, submission.downs))
-    title = best_submission.title
-    ups = best_submission.ups
-    content = best_submission.selftext
-    l = content.split()
-    n = 7
-    sentence_list = [' '.join(l[x:x + n]) for x in range(0, len(l), n)]
+    winnerPost = sort_posts(tmp_dict_list)
 
-    values = {
-        'title': title,
-        'ups': ups,
-        'sentence_list': sentence_list,
-        'sentence_list_full': content
-    }
+    # Debugging
+    print(f'WINNER POST CONTENT: {winnerPost["content"]}')
+    print(f'WINNER POST UPS: {winnerPost["ups"]}')
+    print(f'WINNER POST URL: {winnerPost["url"]}')
 
-    #    for top in top_comments:
-    #        print('Comment: {}, Ups: {}'.format(top.body, top.ups))
+    # Saving for now
+    # sentence_list = [' '.join(l[x:x + n]) for x in range(0, len(l), n)]
 
-    return json.dumps(values)
+    return json.dumps(winnerPost)
+
+
+def sort_posts(dict_list):
+    tmp = dict_list
+    sorted_by_len_list = []
+    for post in tmp:
+        if not len(post['content']) > 1000 or len(post['content']) < 300:
+            sorted_by_len_list.append(post)
+
+    currMax = 0
+    winner = None
+    print(f'SORTED_BY_LEN_LIST SIZE: {len(sorted_by_len_list)}')
+    for post in sorted_by_len_list:
+        if post['ups'] > currMax:
+            currMax = post['ups']
+            winner = post
+
+    return winner
+
+
+def fetch_reddit_stuff(subreddit):
+    reddit = return_instance()
+    blob = json.loads(return_blob(subreddit, reddit))
+    return blob
