@@ -36,6 +36,7 @@ def return_blob(subreddit, reddit_instance):
     winnerPost = sort_posts(tmp_dict_list)
 
     # Debugging
+    print(f'WINNER POST TITLE: {winnerPost["title"]}')
     print(f'WINNER POST CONTENT: {winnerPost["content"]}')
     print(f'WINNER POST UPS: {winnerPost["ups"]}')
     print(f'WINNER POST URL: {winnerPost["url"]}')
