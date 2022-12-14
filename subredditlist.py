@@ -8,7 +8,8 @@ list = [
     'offmychest',
     'AmItheAsshole',
     'pettyrevenge',
-    'relationships'
+    'relationships',
+    'relationship_advice'
 ]
 
 

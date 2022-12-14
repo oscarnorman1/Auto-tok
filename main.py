@@ -77,7 +77,7 @@ def video_stuff(audio_durations_array):
 
     # Preview or write
     #final.show(15, interactive=True)
-    final.write_videofile('result.mp4', threads=12, fps=30)
+    final.write_videofile('results/vid/result.mp4', threads=12, fps=30)
 
 
 def get_concatenated_background_video(n):
@@ -110,7 +110,7 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'relationships'
+    subreddit = 'relationship_advice'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_save_title_print_screen(reddit_json_blob['url'])
     selenium_save_content_print_screen(reddit_json_blob['url'])
