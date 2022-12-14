@@ -30,7 +30,7 @@ def selenium_save_content_print_screen(subreddit):
     time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[5]/div')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[4]/div')
     element_post.screenshot('results/img/postContent.png')
     fox.quit()
 
