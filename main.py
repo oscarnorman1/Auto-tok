@@ -11,19 +11,7 @@ import math
 import time
 
 
-def selenium_save_title_print_screen(subreddit):
-    firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
-    fox = webdriver.Firefox(firefox_profile=firefox_profile)
-    fox.get(subreddit)
-    time.sleep(0.5)
-
-    element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
-    element_post.screenshot('results/img/postTitle.png')
-    fox.quit()
-
-
-def selenium_save_content_print_screen(subreddit):
+def selenium_printscreen_title_and_content(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
     fox = webdriver.Firefox(firefox_profile=firefox_profile)
     fox.get(subreddit)
@@ -32,6 +20,10 @@ def selenium_save_content_print_screen(subreddit):
     element_post = fox.find_element('xpath',
                                     '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[4]/div')
     element_post.screenshot('results/img/postContent.png')
+
+    element_post = fox.find_element('xpath',
+                                     '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
+    element_post.screenshot('results/img/postTitle.png')
     fox.quit()
 
 
@@ -110,10 +102,9 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'pettyrevenge'
+    subreddit = 'relationship_advice'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
-    selenium_save_title_print_screen(reddit_json_blob['url'])
-    selenium_save_content_print_screen(reddit_json_blob['url'])
+    selenium_printscreen_title_and_content(reddit_json_blob['url'])
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
     video_stuff(audio_durations)
 
