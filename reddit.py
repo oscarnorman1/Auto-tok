@@ -20,11 +20,11 @@ def return_blob(subreddit, reddit_instance):
     subreddit = reddit_instance.subreddit(subreddit)
     print("SUBREDDIT: {}".format(subreddit))
     top_category = config.getProperty('top_category')
-    subreddit_top = subreddit.top(top_category, limit=100)
+    subreddit_top = subreddit.top(top_category, limit=10)
 
     tmp_dict_list = []
     for index, best_submission in enumerate(subreddit_top):
-        if not best_submission.stickied:
+        if not best_submission.stickied and not best_submission.over_18:
             tmpdict = {
                 'title': best_submission.title,
                 'content': best_submission.selftext,
@@ -51,6 +51,7 @@ def sort_posts(dict_list):
     tmp = dict_list
     sorted_by_len_list = []
     for post in tmp:
+        # TODO: check if it shouöd be AND or OR statement
         if not len(post['content']) > 1500 or len(post['content']) < 300:
             sorted_by_len_list.append(post)
 

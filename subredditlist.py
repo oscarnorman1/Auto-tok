@@ -3,13 +3,15 @@ import random
 list = [
     'TrueOffMyChest',
     'confession',
+    'confessions',
     'TalesFromRetail',
     'talesfromtechsupport',
     'offmychest',
     'AmItheAsshole',
     'pettyrevenge',
     'relationships',
-    'relationship_advice'
+    'relationship_advice',
+    'tifu'
 ]
 
 
