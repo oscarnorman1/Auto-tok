@@ -118,6 +118,7 @@ config.json
 assets/
 results/img/
 results/vid/
+results/audio
 
 # Spyder project settings
 .spyderproject
