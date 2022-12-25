@@ -20,7 +20,7 @@ def return_blob(subreddit, reddit_instance):
     subreddit = reddit_instance.subreddit(subreddit)
     print("SUBREDDIT: {}".format(subreddit))
     top_category = config.getProperty('top_category')
-    subreddit_top = subreddit.top(top_category, limit=10)
+    subreddit_top = subreddit.top(top_category, limit=100)
 
     tmp_dict_list = []
     for index, best_submission in enumerate(subreddit_top):
