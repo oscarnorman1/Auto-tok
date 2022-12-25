@@ -120,6 +120,9 @@ results/img/
 results/vid/
 results/audio
 
+# Tags
+tags.txt
+
 # Spyder project settings
 .spyderproject
 .spyproject
