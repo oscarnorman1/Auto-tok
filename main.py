@@ -18,7 +18,7 @@ def selenium_printscreen_title_and_content(subreddit):
     time.sleep(0.5)
 
     element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[4]/div')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[5]/div')
     element_post.screenshot('results/img/postContent.png')
 
     element_post = fox.find_element('xpath',
@@ -102,7 +102,7 @@ def fetch_reddit_stuff(subreddit):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'relationship_advice'
+    subreddit = 'relationships'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_printscreen_title_and_content(reddit_json_blob['url'])
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
