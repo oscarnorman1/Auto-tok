@@ -1,11 +1,15 @@
 import moviepy.editor as mpy
 from selenium import webdriver
 from pydub import AudioSegment
+from gtts import gTTS
+from PIL import Image
+from mongo import Mongo
 import reddit as r
 import json
 import config
 import subredditlist
-import pyttsx3
+import selenium_util
+# import pyttsx3
 import os
 import math
 import time
@@ -17,12 +21,25 @@ def selenium_printscreen_title_and_content(subreddit):
     fox.get(subreddit)
     time.sleep(0.5)
 
-    element_post = fox.find_element('xpath',
-                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div/div[5]/div')
-    element_post.screenshot('results/img/postContent.png')
+    for index, x in enumerate(selenium_util.xpaths):
+        element_post = fox.find_element('xpath', x)
+        element_post.screenshot('results/img/postContent.png')
+        image_path = "results/img/postContent.png"
+        try:
+            img = Image.open(image_path)
+        except FileNotFoundError:
+            print(f'Unable to open image in path: {image_path}')
+            return None
+
+        if img.height >= 150:
+            print("length longer than 150")
+            break
+        if img.height < 150 and index == len(selenium_util.xpaths) -1:
+            fox.quit()
+            raise Exception("None of the xpaths generated a image that passes the requirements")
 
     element_post = fox.find_element('xpath',
-                                     '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
+                                    '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
     element_post.screenshot('results/img/postTitle.png')
     fox.quit()
 
@@ -58,7 +75,7 @@ def video_stuff(audio_durations_array):
 
     content_display = get_concatenated_background_video(15)
     final_content_display = mpy.CompositeVideoClip([content_display, content_image]) \
-        .subclip(0, audio_content_duration + 2)\
+        .subclip(0, audio_content_duration + 2) \
         .set_audio(content_audio)
 
     # Final video
@@ -68,7 +85,7 @@ def video_stuff(audio_durations_array):
     final.resize((720, 1280))
 
     # Preview or write
-    #final.show(15, interactive=True)
+    # final.show(15, interactive=True)
     final.write_videofile('results/vid/result.mp4', threads=12, fps=30)
 
 
@@ -80,13 +97,17 @@ def get_concatenated_background_video(n):
 
 
 def text_to_speech_stuff(text_array):
-    engine = pyttsx3.init()
-    voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[0])
-    engine.setProperty('rate', 150)
-    engine.save_to_file(text_array[0], 'results/audio/test_title.mp3')
-    engine.save_to_file(text_array[1], 'results/audio/test_content.mp3')
-    engine.runAndWait()
+    # engine = pyttsx3.init()
+    # voices = engine.getProperty('voices')
+    # engine.setProperty('voice', voices[0])
+    # engine.setProperty('rate', 150)
+    # engine.save_to_file(text_array[0], 'results/audio/test_title.mp3')
+    # engine.save_to_file(text_array[1], 'results/audio/test_content.mp3')
+    # engine.runAndWait()
+    speech = gTTS(text=text_array[0], lang='en', tld='ca')
+    speech.save('results/audio/test_title.mp3')
+    speech = gTTS(text=text_array[1], lang='en', tld='ca')
+    speech.save('results/audio/test_content.mp3')
 
     audio_title = AudioSegment.from_file(os.getcwd() + "\\results\\audio\\test_title.mp3")
     audio_content = AudioSegment.from_file(os.getcwd() + "\\results\\audio\\test_content.mp3")
@@ -99,13 +120,19 @@ def fetch_reddit_stuff(subreddit):
     blob = json.loads(r.return_blob(subreddit, reddit))
     return blob
 
+def save_to_db(dict):
+    db = Mongo()
+    tmp = {"title": dict["title"], "content": dict["content"], "ups": dict["ups"], "url": dict["url"]}
+    db.save(tmp)
+
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'relationships'
+    subreddit = 'tifu'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_printscreen_title_and_content(reddit_json_blob['url'])
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
+    save_to_db(reddit_json_blob)
     video_stuff(audio_durations)
 
 

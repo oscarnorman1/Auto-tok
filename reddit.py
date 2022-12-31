@@ -52,7 +52,7 @@ def sort_posts(dict_list):
     sorted_by_len_list = []
     for post in tmp:
         # TODO: check if it shouöd be AND or OR statement
-        if not len(post['content']) > 1500 or len(post['content']) < 300:
+        if not len(post['content']) > 1000 or len(post['content']) < 300:
             sorted_by_len_list.append(post)
 
     currMax = 0
