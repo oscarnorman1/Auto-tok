@@ -6,5 +6,6 @@
   "username": "",
   "check_for_async": "",
   "firefox_profile_path": "",
-  "top_category": "week"
+  "top_category": "week",
+  "dburl": ""
 }
