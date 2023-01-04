@@ -5,15 +5,45 @@ from gtts import gTTS
 from PIL import Image
 from mongo import Mongo
 import reddit as r
+import pyautogui
 import json
 import config
 import subredditlist
 import selenium_util
-# import pyttsx3
 import os
 import math
 import time
 
+
+def upload(subreddit):
+    firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
+    fox = webdriver.Firefox(firefox_profile=firefox_profile)
+    fox.get("https://www.tiktok.com/upload?lang=sv-SE")
+
+    time.sleep(2)
+
+    pyautogui.click(800, 320)
+    pyautogui.typewrite(get_tags(subreddit))
+
+    time.sleep(1)
+
+    pyautogui.click(613, 692)
+    time.sleep(1)
+
+    pyautogui.click(83, 359)
+    time.sleep(1)
+
+    pyautogui.click(241, 172)
+    pyautogui.click(241, 172)
+    time.sleep(20)
+
+    pyautogui.click(1014, 963)
+    time.sleep(10)
+    fox.quit()
+
+
+def get_tags(subreddit):
+    return f"{subreddit} #python #reddit #automation #{subreddit} #foryou"
 
 def selenium_printscreen_title_and_content(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
@@ -34,9 +64,11 @@ def selenium_printscreen_title_and_content(subreddit):
         if img.height >= 150:
             print("length longer than 150")
             break
-        if img.height < 150 and index == len(selenium_util.xpaths) -1:
+        if img.height < 150 and index == len(selenium_util.xpaths) - 1:
             fox.quit()
             raise Exception("None of the xpaths generated a image that passes the requirements")
+        if img.height < 150:
+            print("lenght shorter than 150, continuing with other xpath....")
 
     element_post = fox.find_element('xpath',
                                     '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div/div[2]/div[3]/div[1]/div[2]/div[1]/div')
@@ -120,6 +152,7 @@ def fetch_reddit_stuff(subreddit):
     blob = json.loads(r.return_blob(subreddit, reddit))
     return blob
 
+
 def save_to_db(dict):
     db = Mongo()
     tmp = {"title": dict["title"], "content": dict["content"], "ups": dict["ups"], "url": dict["url"]}
@@ -134,6 +167,7 @@ def main():
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
     save_to_db(reddit_json_blob)
     video_stuff(audio_durations)
+    upload(subreddit)
 
 
 if __name__ == "__main__":
