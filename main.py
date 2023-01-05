@@ -3,6 +3,8 @@ from selenium import webdriver
 from pydub import AudioSegment
 from gtts import gTTS
 from PIL import Image
+from selenium.common import NoSuchElementException
+
 from mongo import Mongo
 import reddit as r
 import pyautogui
@@ -37,13 +39,14 @@ def upload(subreddit):
     pyautogui.click(241, 172)
     time.sleep(20)
 
-    pyautogui.click(1014, 963)
+    pyautogui.click(1026, 917)
     time.sleep(10)
     fox.quit()
 
 
 def get_tags(subreddit):
     return f"{subreddit} #python #reddit #automation #{subreddit} #foryou"
+
 
 def selenium_printscreen_title_and_content(subreddit):
     firefox_profile = webdriver.FirefoxProfile(config.getProperty('firefox_profile_path'))
@@ -52,7 +55,10 @@ def selenium_printscreen_title_and_content(subreddit):
     time.sleep(0.5)
 
     for index, x in enumerate(selenium_util.xpaths):
-        element_post = fox.find_element('xpath', x)
+        try:
+            element_post = fox.find_element('xpath', x)
+        except NoSuchElementException:
+            continue
         element_post.screenshot('results/img/postContent.png')
         image_path = "results/img/postContent.png"
         try:
@@ -61,13 +67,13 @@ def selenium_printscreen_title_and_content(subreddit):
             print(f'Unable to open image in path: {image_path}')
             return None
 
-        if img.height >= 150:
+        if img.height >= 80:
             print("length longer than 150")
             break
-        if img.height < 150 and index == len(selenium_util.xpaths) - 1:
+        if img.height < 80 and index == len(selenium_util.xpaths) - 1:
             fox.quit()
             raise Exception("None of the xpaths generated a image that passes the requirements")
-        if img.height < 150:
+        if img.height < 80:
             print("lenght shorter than 150, continuing with other xpath....")
 
     element_post = fox.find_element('xpath',
@@ -129,13 +135,6 @@ def get_concatenated_background_video(n):
 
 
 def text_to_speech_stuff(text_array):
-    # engine = pyttsx3.init()
-    # voices = engine.getProperty('voices')
-    # engine.setProperty('voice', voices[0])
-    # engine.setProperty('rate', 150)
-    # engine.save_to_file(text_array[0], 'results/audio/test_title.mp3')
-    # engine.save_to_file(text_array[1], 'results/audio/test_content.mp3')
-    # engine.runAndWait()
     speech = gTTS(text=text_array[0], lang='en', tld='ca')
     speech.save('results/audio/test_title.mp3')
     speech = gTTS(text=text_array[1], lang='en', tld='ca')
@@ -161,7 +160,7 @@ def save_to_db(dict):
 
 def main():
     # subreddit = subredditlist.getRandomSub()
-    subreddit = 'tifu'
+    subreddit = 'offmychest'
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_printscreen_title_and_content(reddit_json_blob['url'])
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
