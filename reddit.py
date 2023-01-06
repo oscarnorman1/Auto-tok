@@ -1,6 +1,7 @@
 import json
 import praw
 import config
+from mongo import Mongo
 
 
 def return_instance():
@@ -35,12 +36,6 @@ def return_blob(subreddit, reddit_instance):
 
     winnerPost = sort_posts(tmp_dict_list)
 
-    # Debugging
-    print(f'WINNER POST TITLE: {winnerPost["title"]}')
-    print(f'WINNER POST CONTENT: {winnerPost["content"]}')
-    print(f'WINNER POST UPS: {winnerPost["ups"]}')
-    print(f'WINNER POST URL: {winnerPost["url"]}')
-
     # Saving for now
     # sentence_list = [' '.join(l[x:x + n]) for x in range(0, len(l), n)]
 
@@ -50,18 +45,29 @@ def return_blob(subreddit, reddit_instance):
 def sort_posts(dict_list):
     tmp = dict_list
     sorted_by_len_list = []
+    list_after_db_check = []
     for post in tmp:
-        # TODO: check if it shouöd be AND or OR statement
-        if not len(post['content']) > 1000 or len(post['content']) < 300:
+        # TODO: check if it should be AND or OR statement
+        if len(post['content']) < 1000 and len(post['content']) > 300:
             sorted_by_len_list.append(post)
+
+    db = Mongo()
+    for post in sorted_by_len_list:
+        if not db.check_if_exists(post):
+            list_after_db_check.append(post)
 
     currMax = 0
     winner = None
-    print(f'SORTED_BY_LEN_LIST SIZE: {len(sorted_by_len_list)}')
-    for post in sorted_by_len_list:
+    print(f'LIST_AFTER_DB_CHECK SIZE: {len(list_after_db_check)}')
+    for post in list_after_db_check:
         if post['ups'] > currMax:
             currMax = post['ups']
             winner = post
+
+    print(f'WINNER POST TITLE: {winner["title"]}')
+    print(f'WINNER POST CONTENT: {winner["content"]}')
+    print(f'WINNER POST UPS: {winner["ups"]}')
+    print(f'WINNER POST URL: {winner["url"]}')
 
     return winner
 

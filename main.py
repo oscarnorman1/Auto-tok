@@ -40,6 +40,7 @@ def upload(subreddit):
     time.sleep(20)
 
     pyautogui.click(1026, 917)
+    pyautogui.click(1014, 963)
     time.sleep(10)
     fox.quit()
 
@@ -159,8 +160,7 @@ def save_to_db(dict):
 
 
 def main():
-    # subreddit = subredditlist.getRandomSub()
-    subreddit = 'offmychest'
+    subreddit = subredditlist.getRandomSub()
     reddit_json_blob = fetch_reddit_stuff(subreddit)
     selenium_printscreen_title_and_content(reddit_json_blob['url'])
     audio_durations = text_to_speech_stuff([reddit_json_blob['title'], reddit_json_blob['content']])
